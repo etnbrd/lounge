@@ -617,10 +617,6 @@ button,
 	word-break: break-all;
 }
 
-#windows .window .header {
-	display: none;
-}
-
 #chat {
 	bottom: 0;
 	left: 0;
