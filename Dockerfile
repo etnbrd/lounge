@@ -3,7 +3,7 @@
 # https://github.com/Shuo-IRC/Shuo/pull/87/files
 #
 
-FROM node:4.0-onbuild
+FROM nfnty/arch-nodejs
 
 # Create a non-root user for lounge to run in.
 RUN useradd --create-home lounge
@@ -21,5 +21,8 @@ EXPOSE 9000
 # Drop root.
 USER lounge
 
+# Add application files
+ADD . /home/lounge
+
 # Don't use an entrypoint here. It makes debugging difficult.
-CMD node index.js --home $LOUNGE_HOME
+CMD cd /home/lounge; node index.js --home $LOUNGE_HOME
