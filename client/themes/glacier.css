@@ -1,0 +1,287 @@
+/*
+Glacier theme for Shout.
+Based on the Morning Theme by Riku Rouvila
+
+Installation instructions can be found here
+http://shout-irc.com/docs/server/configuration.html#theme
+
+Author: etnbrd
+GitHub: https://github.com/etnbrd
+*/
+
+/*
+#0E151B - Black
+#D7503C - Red
+#52EAA9 - Green
+#FFB454 - Yellow
+#266B85 - Blue
+#CB253D - Magenta
+#8996A8 - Cyan
+#FEFEFE - White
+
+#23323F - Bright Black
+#F05E33 - Bright Red
+#76FFCD - Bright Green
+#FFE792 - Bright yellow
+#3CADD7 - Bright Blue
+#D73C4D - Bright Magenta
+#AFC4DB - Bright Cyan
+#FFFFFF - Bright White
+
+#F57542 - orange
+#9F3A2C - brown
+#1B2735 - Darker
+#B0B3BA - Grey
+#FFFFFF - Bright White
+
+#4ABE95 - green
+#43AE88 - green 2
+#5EEBB8 - bright green 2
+#BD4230 - dark red
+
+
+#DDB700 - mustard
+#F7F09D - yellow 2
+#F3FFB5 - yellow 3 (greener)
+
+#0C1217 - black
+#0D1319 - black 2
+#0E151B - black 3
+#23323F - black 5
+#233345 - black 6
+#263445 - black 7
+
+#3C444D - grey
+#3E4751 - grey 2
+#515C68 - grey 3
+#B0B3BA - bright grey
+#EFEFEF - brigher grey
+#F8F8F8 - white
+*/
+
+/*
+SIDEBAR BACKGROUND #0D1319
+FOOTER BACKGROUND #0C1217
+CHAN BACKGROUND #B0B3BA
+INPUT BACKGROUND #EFEFEF
+PRIMARY #23323F
+SECONDARY #F05E33
+BORDERS #E0E3EA
+ERROR #D7503C
+SEARCH #F05E33
+NICK #F05E33
+LINK #266B85
+CHAT #0E151B
+QUIT #D73C4D
+*/
+
+body {
+  background: #0D1319;
+}
+
+#windows .chan, #windows .window {
+  background: #F8F8F8;
+}
+
+#main #chat,
+#main #form,
+#form .input,
+#chat,
+#windows .header {
+  font-family: 'Terminus', sans-serif !important;
+  font-size: 15px;
+}
+
+#settings, #sign-in, #connect {
+  color: #23323F;
+}
+
+#settings, #sign-in, #connect .title {
+  color: #F05E33;
+}
+
+#settings, #sign-in, #connect .opt {
+  color: #23323F;
+}
+
+#sidebar {
+  background: #0D1319;
+  bottom: 48px;
+}
+
+#footer {
+  background: #0C1217;
+  border-top: 1px solid #000;
+}
+
+#sidebar .chan:first-child,
+#sidebar .chan.active:first-child {
+  color: #FF363C;
+}
+
+#sidebar .chan:first-child:hover,
+#sidebar .chan.active:first-child {
+  color: #FF565C;
+}
+
+#chat .sidebar {
+  background: #F8F8F8;
+}
+
+#chat .count {
+  background-color: #F8F8F8;
+}
+
+#chat .search {
+  color: #F05E33;
+  padding: 15px 16px;
+}
+#chat .search::-webkit-input-placeholder {
+   color: #F05E33;
+   opacity: 0.5;
+}
+
+/* Borders */
+#chat .from, #windows .header,
+#chat .user-mode:before,
+#chat .sidebar {
+  border-color: #E0E3EA;
+}
+
+/* Attach chat to window borders */
+#windows .window:before, #windows .chan:before {
+  display: none;
+}
+
+#footer {
+  left: 0;
+  bottom: 0;
+  width: 220px;
+}
+
+#main {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  border-radius: 0;
+}
+
+#chat .chat, #chat .sidebar {
+  top: 48px;
+}
+
+/* User list */
+#chat .user-mode {
+  color: #23323F;
+}
+
+/* Nicknames */
+#chat.no-colors .from button,
+#chat.no-colors .sidebar button {
+  color: #F05E33 !important;
+}
+
+#chat.no-colors .from button:hover,
+#chat.no-colors .sidebar button:hover {
+  color: #23323F !important;
+}
+
+#chat a {
+  color: #266B85;
+}
+
+#chat button:hover {
+  opacity: 1;
+}
+
+/* Message form */
+#form {
+  background: #F8F8F8;
+  border-color: #E0E3EA;
+}
+
+#form .input {
+  margin-right: 0;
+}
+
+#form #input {
+  background-color: #F8F8F8;
+  // border-color: #E0E3EA;
+  color: #23323F;
+  // padding-left: 1em !important;
+}
+
+#form #nick {
+  // display: none;
+  background: #E0E3EA;
+  color: #F05E33;
+}
+
+#chat .header {
+  color: #F05E33;
+}
+
+/* Hide unnecessary buttons */
+#windows .header .button,
+#form #submit {
+  display: none;
+}
+
+/* Setup text colors */
+#chat .msg {
+  color: #0E151B;
+}
+#chat .message {
+  color: #23323F;
+}
+#chat .self .text {
+  color: #F05E33;
+
+}
+
+#chat .error,
+#chat .error .from,
+#chat .highlight,
+#chat .highlight .from {
+  color: #D7503C;
+}
+
+#chat .msg.quit .time,
+#chat .msg.quit .from button,
+#chat .msg.quit .type {
+  color: #D73C4D !important;
+}
+
+#chat .msg.topic {
+  color: #23323F;
+}
+#chat .msg .type {
+  margin-right: 0.5em;
+}
+
+#chat .msg.join .time,
+#chat .msg.join .from button,
+#chat .msg.join .type {
+  color: #8cd0d3 !important;
+}
+/* Embeds */
+#chat .toggle-content,
+#chat .toggle-button {
+  background: #93b3a3;
+  color: #23323F;
+}
+#chat .toggle-content img {
+  float: left;
+  margin-right: 0.5em;
+}
+#chat .toggle-content .body {
+  color: #F05E33;
+
+}
+
+@media (max-width: 768px) {
+  #footer {
+    left: -220px;
+    width: 225px;
+  }
+}

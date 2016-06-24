@@ -1,0 +1,30 @@
+{
+  "user": "etnbrd",
+  "password": "SHOUT_PASSWD",
+  "log": false,
+  "networks": [{
+    "name": "Freenode",
+    "host": "irc.freenode.net",
+    "port": 6697,
+    "tls": true,
+    "password": "IRC_PASSWD",
+    "nick": "etnbrd",
+    "realname": "etnbrd",
+    "commands": [
+      "/msg NickServ identify password",
+    ],
+    "join": "#cozycloud, #flynn, ##js, #node.js, #v8, #libuv, #archlinux"
+    },{
+    "name": "Mozilla",
+    "host": "irc.mozilla.org",
+    "port": 6697,
+    "tls": true,
+    "password": "IRC_PASSWD",
+    "nick": "etnbrd",
+    "realname": "etnbrd",
+    "commands": [
+      "/msg NickServ identify password",
+    ],
+    "join": "#insa, #mozlyon, #frenchmoz, #mozillians, #newbies, #js, #pjs"
+    }]
+}
