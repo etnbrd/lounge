@@ -25,4 +25,4 @@ USER lounge
 ADD . /home/lounge
 
 # Don't use an entrypoint here. It makes debugging difficult.
-CMD node index.js --home $LOUNGE_HOME
+CMD cd /home/lounge; node index.js --home $LOUNGE_HOME
