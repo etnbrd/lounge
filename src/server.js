@@ -32,43 +32,55 @@ module.exports = function(options) {
 	if (!https.enable) {
 		server = require("http");
 		server = server.createServer(app).listen(port, host);
+		continueWithServer(server);
 	} else {
+		Helper.checkCert(5, {
+			key: Helper.expandHome(https.key),
+			cert: Helper.expandHome(https.certificate)
+		}, startHttps)
+	}
+
+	function startHttps() {
 		server = require("spdy");
 		server = server.createServer({
 			key: fs.readFileSync(Helper.expandHome(https.key)),
 			cert: fs.readFileSync(Helper.expandHome(https.certificate))
 		}, app).listen(port, host);
+
+		continueWithServer(server);
 	}
 
-	if ((config.identd || {}).enable) {
-		if (manager.identHandler) {
-			log.warn("Using both identd and oidentd at the same time!");
+	function withServer(server) {
+		if ((config.identd || {}).enable) {
+			if (manager.identHandler) {
+				log.warn("Using both identd and oidentd at the same time!");
+			}
+
+			require("./identd").start(config.identd.port);
 		}
 
-		require("./identd").start(config.identd.port);
-	}
+		var sockets = io(server, {
+			transports: transports
+		});
 
-	var sockets = io(server, {
-		transports: transports
-	});
+		sockets.on("connect", function(socket) {
+			if (config.public) {
+				auth.call(socket);
+			} else {
+				init(socket);
+			}
+		});
 
-	sockets.on("connect", function(socket) {
-		if (config.public) {
-			auth.call(socket);
-		} else {
-			init(socket);
-		}
-	});
+		manager.sockets = sockets;
 
-	manager.sockets = sockets;
+		log.info("The Lounge v" + pkg.version + " is now running on", protocol + "://" + config.host + ":" + config.port + "/");
+		log.info("Press ctrl-c to stop\n");
 
-	log.info("The Lounge v" + pkg.version + " is now running on", protocol + "://" + config.host + ":" + config.port + "/");
-	log.info("Press ctrl-c to stop\n");
-
-	if (!config.public) {
-		manager.loadUsers();
-		if (config.autoload) {
-			manager.autoload();
+		if (!config.public) {
+			manager.loadUsers();
+			if (config.autoload) {
+				manager.autoload();
+			}
 		}
 	}
 };

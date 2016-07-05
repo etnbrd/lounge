@@ -1,5 +1,6 @@
 var path = require("path");
 var os = require("os");
+var fs = require("fs");
 
 var Helper = {
 	expandHome: expandHome,
@@ -7,6 +8,7 @@ var Helper = {
 	getUserConfigPath: getUserConfigPath,
 	getUserLogsPath: getUserLogsPath,
 	setHome: setHome,
+	checkCerts: checkCerts
 };
 
 module.exports = Helper;
@@ -43,4 +45,32 @@ function expandHome(shortenedPath) {
 	home = home.replace("$", "$$$$");
 
 	return path.resolve(shortenedPath.replace(/^~($|\/|\\)/, home + "$1"));
+}
+
+function checkCerts(trials, paths, cb, options) {
+  if (trials === 0) {
+    console.error('certificate not found');
+    return;
+  }
+
+  var errs = {}
+  var i = 2;
+
+  fs.access(paths.key, fs.F_OK, check('key'));
+  fs.access(paths.cert, fs.F_OK, check('cert'));
+
+  function check(file){
+    return function (err) {
+      errs[file] = err
+
+      if (--i === 0) {
+        if (errs.key || errs.cert) {
+          console.log('certificate not accesible yet, retrying in 15s');
+          return setTimeout(verifyCert, 1500, trials - 1)
+        } else {
+          cb(options);
+        }
+      }
+    }
+  }
 }
