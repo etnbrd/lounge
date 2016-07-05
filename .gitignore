@@ -3,7 +3,8 @@
 node_modules/
 npm-debug.log
 
-coverage/
+coverage
+data/
 
 # Built assets created at npm install/prepublish time
 # See https://docs.npmjs.com/misc/scripts
