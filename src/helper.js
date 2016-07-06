@@ -63,6 +63,8 @@ function checkCerts(trials, paths, cb, options) {
     return;
   }
 
+  console.log(paths)
+
   var errs = {}
   var i = 2;
 
@@ -76,7 +78,7 @@ function checkCerts(trials, paths, cb, options) {
       if (--i === 0) {
         if (errs.key || errs.cert) {
           console.log('certificate not accesible yet, retrying in 15s');
-          return setTimeout(checkCerts, 1500, trials - 1)
+          return setTimeout(checkCerts, 1500, trials - 1, paths, cb, options)
         } else {
           cb(options);
         }
