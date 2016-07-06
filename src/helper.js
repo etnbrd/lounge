@@ -76,7 +76,7 @@ function checkCerts(trials, paths, cb, options) {
       if (--i === 0) {
         if (errs.key || errs.cert) {
           console.log('certificate not accesible yet, retrying in 15s');
-          return setTimeout(verifyCert, 1500, trials - 1)
+          return setTimeout(checkCerts, 1500, trials - 1)
         } else {
           cb(options);
         }
