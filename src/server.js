@@ -28,8 +28,8 @@ module.exports = function() {
 		continueWithServer(server);
 	} else {
 		Helper.checkCert(5, {
-			key: Helper.expandHome(https.key),
-			cert: Helper.expandHome(https.certificate)
+			key: Helper.expandHome(config.https.key),
+			cert: Helper.expandHome(config.https.certificate)
 		}, startHttps)
 	}
 
