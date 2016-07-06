@@ -25,55 +25,44 @@ module.exports = function() {
 	if (!config.https.enable) {
 		server = require("http");
 		server = server.createServer(app).listen(config.port, config.host);
-		continueWithServer(server);
 	} else {
-		Helper.checkCerts(15, {
-			key: Helper.expandHome(config.https.key),
-			cert: Helper.expandHome(config.https.certificate)
-		}, startHttps)
-	}
-
-	function startHttps() {
 		server = require("spdy");
 		server = server.createServer({
 			key: fs.readFileSync(Helper.expandHome(config.https.key)),
 			cert: fs.readFileSync(Helper.expandHome(config.https.certificate))
 		}, app).listen(config.port, config.host);
-		continueWithServer(server);
 	}
 
-	function continueWithServer(server) {
-		if (config.identd.enable) {
-			if (manager.identHandler) {
-				log.warn("Using both identd and oidentd at the same time!");
-			}
-
-			require("./identd").start(config.identd.port);
+	if (config.identd.enable) {
+		if (manager.identHandler) {
+			log.warn("Using both identd and oidentd at the same time!");
 		}
 
-		var sockets = io(server, {
-			transports: config.transports
-		});
+		require("./identd").start(config.identd.port);
+	}
 
-		sockets.on("connect", function(socket) {
-			if (config.public) {
-				auth.call(socket);
-			} else {
-				init(socket);
-			}
-		});
+	var sockets = io(server, {
+		transports: config.transports
+	});
 
-		manager.sockets = sockets;
+	sockets.on("connect", function(socket) {
+		if (config.public) {
+			auth.call(socket);
+		} else {
+			init(socket);
+		}
+	});
 
-		var protocol = config.https.enable ? "https" : "http";
-		log.info("The Lounge v" + pkg.version + " is now running on", protocol + "://" + (config.host || "*") + ":" + config.port + "/", (config.public ? "in public mode" : "in private mode"));
-		log.info("Press ctrl-c to stop\n");
+	manager.sockets = sockets;
 
-		if (!config.public) {
-			manager.loadUsers();
-			if (config.autoload) {
-				manager.autoload();
-			}
+	var protocol = config.https.enable ? "https" : "http";
+	log.info("The Lounge v" + pkg.version + " is now running on", protocol + "://" + (config.host || "*") + ":" + config.port + "/", (config.public ? "in public mode" : "in private mode"));
+	log.info("Press ctrl-c to stop\n");
+
+	if (!config.public) {
+		manager.loadUsers();
+		if (config.autoload) {
+			manager.autoload();
 		}
 	}
 };
