@@ -27,12 +27,10 @@
 
 	<div id="wrap">
 	<div id="viewport">
-		<aside id="sidebar" class="tse-scrollable">
-			<div class="tse-content">
-				<div class="networks"></div>
-				<div class="empty">
-					You're not connected to any networks yet.
-				</div>
+		<aside id="sidebar">
+			<div class="networks"></div>
+			<div class="empty">
+				You're not connected to any networks yet.
 			</div>
 		</aside>
 		<footer id="footer">
@@ -273,6 +271,14 @@
 									Enable notification for all messages
 								</label>
 							</div>
+
+							<div class="col-sm-12">
+								<label class="opt">
+									<label for="highlights" class="sr-only">Custom highlights (comma-separated keywords)</label>
+									<input type="text" id="highlights" name="highlights" class="input" placeholder="Custom highlights (comma-separated keywords)">
+								</label>
+							</div>
+
 							<% if (!public) { %>
 							<div id="change-password">
 								<form action="" method="post">
@@ -318,12 +324,10 @@
 				</div>
 			</div>
 			<form id="form" method="post" action="">
-				<div class="inner">
-					<div class="input">
-						<label for="input" id="nick"></label>
-						<button id="submit" type="submit" title="Send" aria-label="Send message"></button>
-						<input id="input" class="mousetrap">
-					</div>
+				<div class="input">
+					<label for="input" id="nick"></label>
+					<textarea id="input" class="mousetrap"></textarea>
+					<button id="submit" type="submit" title="Send" aria-label="Send message"></button>
 				</div>
 			</form>
 		</div>

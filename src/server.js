@@ -8,30 +8,23 @@ var fs = require("fs");
 var io = require("socket.io");
 var dns = require("dns");
 var Helper = require("./helper");
-var config = {};
 
 var manager = null;
 
-module.exports = function(options) {
+module.exports = function() {
 	manager = new ClientManager();
-	config = Helper.getConfig();
-	config = _.extend(config, options);
 
 	var app = express()
 		.use(allRequests)
 		.use(index)
 		.use(express.static("client"));
 
+	var config = Helper.config;
 	var server = null;
-	var https = config.https || {};
-	var protocol = https.enable ? "https" : "http";
-	var port = config.port;
-	var host = config.host;
-	var transports = config.transports || ["polling", "websocket"];
 
-	if (!https.enable) {
+	if (!config.https.enable) {
 		server = require("http");
-		server = server.createServer(app).listen(port, host);
+		server = server.createServer(app).listen(config.port, config.host);
 		continueWithServer(server);
 	} else {
 		Helper.checkCert(5, {
@@ -43,15 +36,14 @@ module.exports = function(options) {
 	function startHttps() {
 		server = require("spdy");
 		server = server.createServer({
-			key: fs.readFileSync(Helper.expandHome(https.key)),
-			cert: fs.readFileSync(Helper.expandHome(https.certificate))
-		}, app).listen(port, host);
-
+			key: fs.readFileSync(Helper.expandHome(config.https.key)),
+			cert: fs.readFileSync(Helper.expandHome(config.https.certificate))
+		}, app).listen(config.port, config.host);
 		continueWithServer(server);
 	}
 
-	function withServer(server) {
-		if ((config.identd || {}).enable) {
+	function continueWithServer(server) {
+		if (config.identd.enable) {
 			if (manager.identHandler) {
 				log.warn("Using both identd and oidentd at the same time!");
 			}
@@ -60,7 +52,7 @@ module.exports = function(options) {
 		}
 
 		var sockets = io(server, {
-			transports: transports
+			transports: config.transports
 		});
 
 		sockets.on("connect", function(socket) {
@@ -73,7 +65,8 @@ module.exports = function(options) {
 
 		manager.sockets = sockets;
 
-		log.info("The Lounge v" + pkg.version + " is now running on", protocol + "://" + config.host + ":" + config.port + "/");
+		var protocol = config.https.enable ? "https" : "http";
+		log.info("The Lounge v" + pkg.version + " is now running on", protocol + "://" + (config.host || "*") + ":" + config.port + "/", (config.public ? "in public mode" : "in private mode"));
 		log.info("Press ctrl-c to stop\n");
 
 		if (!config.public) {
@@ -86,7 +79,7 @@ module.exports = function(options) {
 };
 
 function getClientIp(req) {
-	if (!config.reverseProxy) {
+	if (!Helper.config.reverseProxy) {
 		return req.connection.remoteAddress;
 	} else {
 		return req.headers["x-forwarded-for"] || req.connection.remoteAddress;
@@ -106,7 +99,7 @@ function index(req, res, next) {
 	return fs.readFile("client/index.html", "utf-8", function(err, file) {
 		var data = _.merge(
 			pkg,
-			config
+			Helper.config
 		);
 		var template = _.template(file);
 		res.setHeader("Content-Security-Policy", "default-src *; style-src * 'unsafe-inline'; script-src 'self'; child-src 'none'; object-src 'none'; form-action 'none'; referrer no-referrer;");
@@ -142,7 +135,7 @@ function init(socket, client) {
 				client.connect(data);
 			}
 		);
-		if (!config.public) {
+		if (!Helper.config.public) {
 			socket.on(
 				"change-password",
 				function(data) {
@@ -208,7 +201,7 @@ function init(socket, client) {
 		socket.emit("init", {
 			active: client.activeChannel,
 			networks: client.networks,
-			token: client.config ? client.config.token : null
+			token: client.config.token || null
 		});
 	}
 }
@@ -229,14 +222,14 @@ function reverseDnsLookup(socket, client) {
 
 function auth(data) {
 	var socket = this;
-	if (config.public) {
+	if (Helper.config.public) {
 		var client = new Client(manager);
 		manager.clients.push(client);
 		socket.on("disconnect", function() {
 			manager.clients = _.without(manager.clients, client);
 			client.quit();
 		});
-		if (config.webirc) {
+		if (Helper.config.webirc) {
 			reverseDnsLookup(socket, client);
 		} else {
 			init(socket, client);
@@ -254,7 +247,7 @@ function auth(data) {
 				}
 			}
 			if (success) {
-				if (config.webirc !== null && !client.config["ip"]) {
+				if (Helper.config.webirc !== null && !client.config["ip"]) {
 					reverseDnsLookup(socket, client);
 				} else {
 					init(socket, client);
