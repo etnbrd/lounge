@@ -27,7 +27,7 @@ module.exports = function() {
 		server = server.createServer(app).listen(config.port, config.host);
 		continueWithServer(server);
 	} else {
-		Helper.checkCerts(5, {
+		Helper.checkCerts(15, {
 			key: Helper.expandHome(config.https.key),
 			cert: Helper.expandHome(config.https.certificate)
 		}, startHttps)

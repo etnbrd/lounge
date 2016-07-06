@@ -63,8 +63,6 @@ function checkCerts(trials, paths, cb, options) {
     return;
   }
 
-  console.log(paths)
-
   var errs = {}
   var i = 2;
 
